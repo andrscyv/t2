@@ -33,9 +33,9 @@ def generalSearch(goal, expande):
                 frontera.appendleft((vecino, path+[vecino]))
 
 def csp(node_count, edge_count, edges):
+    debug = False
     num_colors = node_count
     restricciones = [ Restriccion([f'N{edge[0]}', f'N{edge[1]}'], lambda x, y : x != y) for edge in edges]
-    rest_sim = [Restriccion(['N0'], lambda x : x == 1)]
     grado = { f'N{i}': 0 for i in range(node_count)}
     for edge in edges:
         grado[f'N{edge[0]}']+=1
@@ -45,7 +45,7 @@ def csp(node_count, edge_count, edges):
     print('Nodos ordenados por grado', nodos_ordenados)
     dominios = { f'N{i}':range(num_colors) for  i in range(node_count) }
     #print(dominios)
-    csp = CSP(dominios, restricciones + rest_sim)
+    csp = CSP(dominios, restricciones)
 
     def goal(nodo):
         return len(nodo) == node_count
@@ -54,18 +54,19 @@ def csp(node_count, edge_count, edges):
         variable = nodos_ordenados[len(nodo)]
         #print('\n\n')
         # print('variables', csp.variables)
-        print('Nodo actual', nodo)
-        print( ' Variable que eligió ', variable)
-        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados")
+        # print('Nodo actual', nodo)
+        # print( ' Variable que eligió ', variable)
+        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable}, nodo actual: {nodo}")
         sys.stdout.flush()
         # print(f"\r Se eligio nodo {variable} lleva {len(nodo)} nodos coloreados")
         max_color = max(nodo.values()) if len(nodo) > 0 else -1
         vecinos = []
         for value in range(min(max_color+2, num_colors )):
             assigment = dict_union(nodo, {variable:value})
+            #print('Assignment: ', assigment)
             if csp.consistente(assigment):
                 vecinos.append(assigment)
-        print('Genera vecinos', vecinos)
+        # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
         vecinos = sorted(vecinos, key= lambda v : len(set(v.values())), reverse=True)
         return vecinos
 
