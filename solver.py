@@ -59,16 +59,18 @@ def csp(node_count, edge_count, edges):
         # print(f"\r Se eligio nodo {variable} lleva {len(nodo)} nodos coloreados")
         max_color = max(nodo.values()) if len(nodo) > 0 else -1
         vecinos = []
-        for value in range(min(max_color+2, num_colors), -1, -1):
+        for value in range(min(max_color+1, num_colors), -1, -1):
             assigment = dict_union(nodo, {variable:value})
             #print('Assignment: ', assigment)
-            if csp.consistente(assigment):
+            if csp.consistente_var(assigment,variable):
                 vecinos.append(assigment)
                 if value <= max_color:
                     break
         # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
         sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable} , vecinos: {len(vecinos)} ")
         sys.stdout.flush()
+        # print(vecinos)
+        # print('Max_color', max_color)
         return vecinos
 
     res = generalSearch(goal, expande)
