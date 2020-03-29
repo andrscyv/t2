@@ -32,6 +32,32 @@ def generalSearch(goal, expande):
             for vecino in vecinos:
                 frontera.appendleft((vecino, path+[vecino]))
 
+def greedy( node_count, edge_count, edges):
+    grado = { f'N{i}': 0 for i in range(node_count)}
+    for edge in edges:
+        grado[f'N{edge[0]}']+=1
+        grado[f'N{edge[1]}']+=1
+    #print('Grado de nodos', grado)
+    nodos_ordenados = sorted(list(grado.keys()), key=lambda n : grado[n], reverse=True)
+    vecinos = { f'N{i}':[] for i in range(node_count)}
+    for edge in edges:
+        vecinos[f'N{edge[0]}'].append(f'N{edge[1]}')
+        vecinos[f'N{edge[1]}'].append(f'N{edge[0]}')
+    restricciones = { f'N{i}': [] for i in range(node_count)}
+    sol={}
+    for nodo in nodos_ordenados:
+        for i in range(node_count+1):
+            if i not in restricciones[nodo]:
+                sol[nodo] = i
+                color = i
+                break
+        for vecino in vecinos[nodo]:
+            restricciones[vecino].append(color)
+
+    verifica_sol(sol, vecinos)
+    return max(sol.values())+1
+    #print(sol)
+
 def csp(node_count, edge_count, edges):
     debug = False
     num_colors = node_count
@@ -93,12 +119,21 @@ def trivial_coloring(node_count, edge_count, edges):
 
     return output_data
     
+def verifica_sol(sol,vecinos):
+    res = True
+    for n, v_n in vecinos.items():
+        for v in v_n:
+            res = res and sol[n] != sol[v]
+
+    print(res)
+
 
 ## TODO: Modifica este diccionario
 algorithms = {
     'trivial_coloring': trivial_coloring,
     'p': prueba,
-    'csp': csp
+    'csp': csp,
+    'greedy': greedy
     }
 
 def solve_it(input_data, algorithm=trivial_coloring):
@@ -130,7 +165,12 @@ if __name__ == '__main__':
         
         with open(file_location, 'r') as input_data_file:
             input_data = input_data_file.read()
-        print(solve_it(input_data, algorithm))
+        #print(solve_it(input_data, algorithm))
+        sol=solve_it(input_data, algorithm)
+        print(sol)
+        f = open("colores.txt", "a")
+        f.write(f"{file_location} {sys.argv[2].strip()} {sol}\n")
+        f.close()
     else:
         print("""Este script requiere dos argumentos: \n"""
               """El archivo con los datos del problema y el nombre del algoritmo que diseñaste.\n"""
