@@ -67,9 +67,9 @@ def csp(node_count, edge_count, edges):
             if csp.consistente(assigment):
                 vecinos.append(assigment)
         # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
-        print("Antes de sort", vecinos)
+        #print("Antes de sort", vecinos)
         vecinos = sorted(vecinos, key= lambda v : len(set(v.values())), reverse=True)
-        print("Despues de sort", vecinos)
+        #print("Despues de sort", vecinos)
         return vecinos
 
     res = generalSearch(goal, expande)
