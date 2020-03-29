@@ -40,9 +40,9 @@ def csp(node_count, edge_count, edges):
     for edge in edges:
         grado[f'N{edge[0]}']+=1
         grado[f'N{edge[1]}']+=1
-    print('Grado de nodos', grado)
+    #print('Grado de nodos', grado)
     nodos_ordenados = sorted(set(grado), key=lambda n : grado[n], reverse=True)
-    print('Nodos ordenados por grado', nodos_ordenados)
+    #print('Nodos ordenados por grado', nodos_ordenados)
     dominios = { f'N{i}':range(num_colors) for  i in range(node_count) }
     #print(dominios)
     csp = CSP(dominios, restricciones)
@@ -56,7 +56,7 @@ def csp(node_count, edge_count, edges):
         # print('variables', csp.variables)
         # print('Nodo actual', nodo)
         # print( ' Variable que eligió ', variable)
-        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable}, nodo actual: {nodo}")
+        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable}")
         sys.stdout.flush()
         # print(f"\r Se eligio nodo {variable} lleva {len(nodo)} nodos coloreados")
         max_color = max(nodo.values()) if len(nodo) > 0 else -1
@@ -67,7 +67,9 @@ def csp(node_count, edge_count, edges):
             if csp.consistente(assigment):
                 vecinos.append(assigment)
         # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
+        print("Antes de sort", vecinos)
         vecinos = sorted(vecinos, key= lambda v : len(set(v.values())), reverse=True)
+        print("Despues de sort", vecinos)
         return vecinos
 
     res = generalSearch(goal, expande)
