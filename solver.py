@@ -5,6 +5,7 @@ from collections import deque
 from Csp import Restriccion, CSP
 from Util import *
 import sys
+from functools import partial
 
 def generalSearch(goal, expande):
     mejor_path = []
@@ -100,9 +101,8 @@ def csp_greedy(node_count, edge_count, edges):
     print('\n\nResultado',res[0])
     print(f'Num colores{len(set(res[0].values()))}')
 
-def csp(node_count, edge_count, edges):
+def csp(node_count, edge_count, edges, num_colors=1000):
     debug = False
-    num_colors = 5
     restricciones = [ Restriccion([f'N{edge[0]}', f'N{edge[1]}'], lambda x, y : x != y) for edge in edges]
     grado = { f'N{i}': 0 for i in range(node_count)}
     for edge in edges:
@@ -136,6 +136,7 @@ def csp(node_count, edge_count, edges):
 
     res = generalSearch(goal, expande)
     print('\n\nResultado',res[0])
+    print('Es sol', es_sol(node_count,edges,res[0]))
     print(f'Num colores{len(set(res[0].values()))}')
 
 
@@ -192,7 +193,11 @@ if __name__ == '__main__':
     import sys
     if len(sys.argv) > 2:
         file_location = sys.argv[1].strip()
-        algorithm = algorithms[sys.argv[2].strip()]
+        algo_name = sys.argv[2].strip().split('_')
+        if algo_name[0] == 'csp':
+            algorithm = partial(csp, num_colors=int(algo_name[1]))
+        else:
+            algorithm = algorithms[sys.argv[2].strip()]
 
         print(f"Ejecutando el algoritmo {algorithm} en {file_location}")
         
