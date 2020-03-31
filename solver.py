@@ -3,13 +3,8 @@
 
 from collections import deque
 from Csp import Restriccion, CSP
+from Util import *
 import sys
-
-def dict_union(d1, d2):
-    """ Simplifica la unión de dos diccionarios """
-    d = dict(d1)
-    d.update(d2)
-    return d
 
 def generalSearch(goal, expande):
     mejor_path = []
@@ -22,6 +17,7 @@ def generalSearch(goal, expande):
     frontera.append((start, [start])) # nodo y path
 
     while frontera:
+        print('Tamaño de la frontera ', len(frontera))
         nodo, path = frontera.popleft() # Extraigo por la izquierda
         if goal(nodo):
             mejor_path = path
@@ -33,19 +29,21 @@ def generalSearch(goal, expande):
                 frontera.appendleft((vecino, path+[vecino]))
 
 def greedy( node_count, edge_count, edges):
-    grado = { f'N{i}': 0 for i in range(node_count)}
-    for edge in edges:
-        grado[f'N{edge[0]}']+=1
-        grado[f'N{edge[1]}']+=1
-    #print('Grado de nodos', grado)
-    nodos_ordenados = sorted(list(grado.keys()), key=lambda n : grado[n], reverse=True)
-    vecinos = { f'N{i}':[] for i in range(node_count)}
-    for edge in edges:
-        vecinos[f'N{edge[0]}'].append(f'N{edge[1]}')
-        vecinos[f'N{edge[1]}'].append(f'N{edge[0]}')
+    grado = dict_grado(node_count, edges)
+    nodos = sorted(list(grado.keys()), key=lambda n : grado[n])
+    vecinos = dict_adya(node_count, edges)
     restricciones = { f'N{i}': [] for i in range(node_count)}
     sol={}
-    for nodo in nodos_ordenados:
+    def ordenaNodos(nodos, nodo_asignado):
+        for vecino in vecinos[nodo_asignado]:
+            grado[vecino]-=1
+        nodos = sorted(list(grado.keys()), key=lambda n : grado[n])
+
+    while nodos:
+        #print(nodos)
+        #print(grado)
+        nodo = nodos.pop()
+        #print(nodo)
         for i in range(node_count+1):
             if i not in restricciones[nodo]:
                 sol[nodo] = i
@@ -53,12 +51,16 @@ def greedy( node_count, edge_count, edges):
                 break
         for vecino in vecinos[nodo]:
             restricciones[vecino].append(color)
+        ordenaNodos(nodos, nodo)
 
-    verifica_sol(sol, vecinos)
+    print('Es solucion', es_sol(node_count, edges,sol))
+    print('Sol',sol)
     return max(sol.values())+1
-    #print(sol)
+    
 
-def csp(node_count, edge_count, edges):
+
+
+def csp_greedy(node_count, edge_count, edges):
     debug = False
     num_colors = node_count
     restricciones = [ Restriccion([f'N{edge[0]}', f'N{edge[1]}'], lambda x, y : x != y) for edge in edges]
@@ -78,11 +80,6 @@ def csp(node_count, edge_count, edges):
     def expande(nodo):
         """ nodo es un un diccionario variable: valor """
         variable = nodos_ordenados[len(nodo)]
-        #print('\n\n')
-        # print('variables', csp.variables)
-        # print('Nodo actual', nodo)
-        # print( ' Variable que eligió ', variable)
-        # print(f"\r Se eligio nodo {variable} lleva {len(nodo)} nodos coloreados")
         max_color = max(nodo.values()) if len(nodo) > 0 else -1
         vecinos = []
         for value in range(min(max_color+1, num_colors), -1, -1):
@@ -103,11 +100,53 @@ def csp(node_count, edge_count, edges):
     print('\n\nResultado',res[0])
     print(f'Num colores{len(set(res[0].values()))}')
 
+def csp(node_count, edge_count, edges):
+    debug = False
+    num_colors = 5
+    restricciones = [ Restriccion([f'N{edge[0]}', f'N{edge[1]}'], lambda x, y : x != y) for edge in edges]
+    grado = { f'N{i}': 0 for i in range(node_count)}
+    for edge in edges:
+        grado[f'N{edge[0]}']+=1
+        grado[f'N{edge[1]}']+=1
+    #print('Grado de nodos', grado)
+    nodos_ordenados = sorted(list(grado.keys()), key=lambda n : grado[n], reverse=True)
+    #print('Nodos ordenados por grado', nodos_ordenados)
+    dominios = { f'N{i}':range(num_colors) for  i in range(node_count) }
+    #print(dominios)
+    csp = CSP(dominios, restricciones)
+
+    def goal(nodo):
+        return len(nodo) == node_count
+    def expande(nodo):
+        """ nodo es un un diccionario variable: valor """
+        variable = nodos_ordenados[len(nodo)]
+        max_color = max(nodo.values()) if len(nodo) > 0 else -1
+        vecinos = []
+        for value in range(min(max_color+1, num_colors-1), -1, -1):
+            assigment = dict_union(nodo, {variable:value})
+            #print('Assignment: ', assigment)
+            if csp.consistente_var(assigment,variable):
+                vecinos.append(assigment)
+        # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
+        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable} , vecinos: {len(vecinos)} ")
+        sys.stdout.flush()
+        # print(vecinos)
+        # print('Max_color', max_color)
+        return vecinos
+
+    res = generalSearch(goal, expande)
+    print('\n\nResultado',res[0])
+    print(f'Num colores{len(set(res[0].values()))}')
+
 
 def prueba( node_count, edge_count, edges):
     print("node_count", node_count)
     print("edge_count", edge_count)
     print("edges", edges)
+    grafo = dict_adya(node_count, edges)
+    sol = { k:0 for k,v in grafo.items()}
+    print(sol)
+    print('Es sol', es_sol(node_count, edges, sol))
 
 def trivial_coloring(node_count, edge_count, edges):
     """ every node has its own color """
@@ -119,13 +158,7 @@ def trivial_coloring(node_count, edge_count, edges):
 
     return output_data
     
-def verifica_sol(sol,vecinos):
-    res = True
-    for n, v_n in vecinos.items():
-        for v in v_n:
-            res = res and sol[n] != sol[v]
 
-    print(res)
 
 
 ## TODO: Modifica este diccionario
