@@ -1,0 +1,36 @@
+./data/gc_1000_1 greedy
+./data/gc_1000_3 greedy
+./data/gc_1000_5 greedy
+./data/gc_1000_7 greedy
+./data/gc_1000_9 csp_312
+./data/gc_100_1 greedy 6
+./data/gc_100_3 greedy 13
+./data/gc_100_5 greedy 20
+./data/gc_100_7 csp_26
+./data/gc_100_9 csp_42
+./data/gc_20_1 greedy 3
+./data/gc_20_3 greedy 5
+./data/gc_20_5 greedy csp_5
+./data/gc_20_7 greedy 8
+./data/gc_20_9 greedy 11
+./data/gc_250_1 greedy 11
+./data/gc_250_3 csp_24
+./data/gc_250_5 csp_38
+./data/gc_250_7 csp_59
+./data/gc_250_9 greedy
+./data/gc_4_1 greedy
+./data/gc_500_1 greedy
+./data/gc_500_3 csp_18
+./data/gc_500_5 greedy
+./data/gc_500_7 greedy
+./data/gc_500_9 csp_169
+./data/gc_50_1 csp_4
+./data/gc_50_3 csp_6
+./data/gc_50_5 greedy
+./data/gc_50_7 csp_16
+./data/gc_50_9 csp_22
+./data/gc_70_1 csp_4
+./data/gc_70_3 greedy
+./data/gc_70_5 greedy
+./data/gc_70_7 csp_19
+./data/gc_70_9 greedy

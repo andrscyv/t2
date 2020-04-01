@@ -18,7 +18,7 @@ def generalSearch(goal, expande):
     frontera.append((start, [start])) # nodo y path
 
     while frontera:
-        print('Tamaño de la frontera ', len(frontera))
+        # print('Tamaño de la frontera ', len(frontera))
         nodo, path = frontera.popleft() # Extraigo por la izquierda
         if goal(nodo):
             mejor_path = path
@@ -54,9 +54,9 @@ def greedy( node_count, edge_count, edges):
             restricciones[vecino].append(color)
         ordenaNodos(nodos, nodo)
 
-    print('Es solucion', es_sol(node_count, edges,sol))
-    print('Sol',sol)
-    return max(sol.values())+1
+    # print('Es solucion', es_sol(node_count, edges,sol))
+    # print('Sol',sol)
+    return output_string(sol)
     
 
 
@@ -128,16 +128,17 @@ def csp(node_count, edge_count, edges, num_colors=1000):
             if csp.consistente_var(assigment,variable):
                 vecinos.append(assigment)
         # print('Genera vecinos :', len(vecinos) , ' para valores : ', range(min(max_color+2, num_colors )))
-        sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable} , vecinos: {len(vecinos)} ")
-        sys.stdout.flush()
+        # sys.stdout.write(f"\rLleva {len(nodo)} nodos coloreados , var actual: {variable} , vecinos: {len(vecinos)} ")
+        # sys.stdout.flush()
         # print(vecinos)
         # print('Max_color', max_color)
         return vecinos
 
     res = generalSearch(goal, expande)
-    print('\n\nResultado',res[0])
-    print('Es sol', es_sol(node_count,edges,res[0]))
-    print(f'Num colores{len(set(res[0].values()))}')
+    # print('\n\nResultado',res[0])
+    # print('Es sol', es_sol(node_count,edges,res[0]))
+    # print(f'Num colores{len(set(res[0].values()))}')
+    return output_string(res[0] if res else {})
 
 
 def prueba( node_count, edge_count, edges):

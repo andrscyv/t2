@@ -19,8 +19,8 @@ class CSP:
         """ assigment es un diccionario de variable:valor
             solo se revisa las restricciones que incluyen a var"""
         return all(c(assignment)
-                    for c in self.restricciones
-                    if (var in c.scope and all(variable in assignment for variable in c.scope)) )
+                    for c in self.variables_restricciones[var]
+                    if all(variable in assignment for variable in c.scope) )
     
     def __str__(self):
         return str(self.dominios)

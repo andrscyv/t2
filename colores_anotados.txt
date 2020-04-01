@@ -1,8 +1,8 @@
 ./data/gc_1000_1 greedy 30
 ./data/gc_1000_3 greedy 73
 ./data/gc_1000_5 greedy 121
-./data/gc_1000_7 greedy 193
-./data/gc_1000_9 greedy 316
+./data/gc_1000_7 greedy 189
+./data/gc_1000_9 greedy 316 312
 ./data/gc_100_1 greedy 6 no
 ./data/gc_100_3 greedy 13 no
 ./data/gc_100_5 greedy 20 no
@@ -20,10 +20,10 @@
 ./data/gc_250_9 greedy 96 no
 ./data/gc_4_1 greedy 2 no
 ./data/gc_500_1 greedy 18 no
-./data/gc_500_3 greedy 43
-./data/gc_500_5 greedy 69
-./data/gc_500_7 greedy 103
-./data/gc_500_9 greedy 174
+./data/gc_500_3 greedy 43 18
+./data/gc_500_5 greedy 69 no
+./data/gc_500_7 greedy 103 no
+./data/gc_500_9 greedy 174 169
 ./data/gc_50_1 greedy 5 4
 ./data/gc_50_3 greedy 9 6
 ./data/gc_50_5 greedy 11 no
